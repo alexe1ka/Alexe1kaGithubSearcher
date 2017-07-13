@@ -1,18 +1,21 @@
 package com.githubsearcher.alexe1ka.alexe1kagithubsearcher;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.EditText;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.model.SearchRepository;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,8 +28,7 @@ public class RepositoryActivity extends AppCompatActivity implements DownloadCom
     private String searchKeyword;
     RecyclerView recyclerView;
     List<SearchRepository> repositories;
-
-
+    ProgressDialog mProgressDialog;
 
 
     TextView mRepoView;
@@ -38,28 +40,47 @@ public class RepositoryActivity extends AppCompatActivity implements DownloadCom
         setContentView(R.layout.activity_repository);
         searchKeyword = getIntent().getExtras().getString("searchKeyword");
 
-        
+        repositories = new ArrayList<>();
 
+        recyclerView = (RecyclerView) findViewById(R.id.repo_rv);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
+        FoundRepoAdapter foundRepoAdapter = new FoundRepoAdapter(repositories);
+        recyclerView.setAdapter(foundRepoAdapter);
 
+        if (isNetworkConnected() || isWifiConnected()) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage("Please wait...");
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.show();
 
+            makeRequestToApi();
+        } else {
+            new AlertDialog.Builder(this)
+                    .setTitle("No Internet Connection")
+                    .setMessage("It looks like your internet connection is off. Please turn it " +
+                            "on and try again")
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    }).setIcon(android.R.drawable.ic_dialog_alert).show();
+        }
 
+    }
 
-
-
-
-
-
+    private void makeRequestToApi() {
         AppSearch.getSearchApi().foundRepository(searchKeyword).enqueue(new Callback<ArrayList<SearchRepository>>() {
             @Override
             public void onResponse(Call<ArrayList<SearchRepository>> call, Response<ArrayList<SearchRepository>> response) {
+                Log.v("RESPONSE_BODY", response.body().toString());
                 if (response.body() != null) {
+                    Log.i(getApplicationContext().toString(), response.toString());
                     repositories.addAll(response.body());
-                    Toast.makeText(getApplicationContext(), repositories.get(0).toString(), Toast.LENGTH_LONG).show();
-
+                    recyclerView.getAdapter().notifyDataSetChanged();
                 } else {
-                    Toast.makeText(getApplicationContext(), response.body().toString(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "response body=0", Toast.LENGTH_LONG).show();
                 }
+
             }
 
             @Override
@@ -67,11 +88,6 @@ public class RepositoryActivity extends AppCompatActivity implements DownloadCom
                 Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
             }
         });
-
-
-        //mRepoView = (TextView) findViewById(R.id.testTextViewRepo);
-        //mRepoView.setText(response.toString());
-
     }
 
 

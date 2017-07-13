@@ -42,6 +42,8 @@ public class MainActivityFragment extends Fragment {
                 Intent intent = new Intent(getActivity(),RepositoryActivity.class);
                 intent.putExtra("searchKeyword",searchKeyword);
                 startActivity(intent);
+                Log.i(getContext().toString(),"searchKeyword="+searchKeyword);
+
                 //finish();
 
 

@@ -15,7 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 //Android-синглетон
 // инициализация retrofit'а
 public class AppSearch extends Application {
-    private static GitHubSearchApi gitHubSearchApiApi;
+    private static GitHubSearchApi gitHubSearchApi;
     private Retrofit retrofit;
 
     @Override
@@ -23,13 +23,13 @@ public class AppSearch extends Application {
         super.onCreate();
 
         retrofit = new Retrofit.Builder().
-                baseUrl("https://api.github.com/search/repositories/").
+                baseUrl("https://api.github.com").
                 addConverterFactory(GsonConverterFactory.create()).
                 build(); //конвертер json
-        gitHubSearchApiApi = retrofit.create(GitHubSearchApi.class);
+        gitHubSearchApi = retrofit.create(GitHubSearchApi.class);
     }
 
     public static GitHubSearchApi getSearchApi() {
-        return gitHubSearchApiApi;
+        return gitHubSearchApi;
     }
 }

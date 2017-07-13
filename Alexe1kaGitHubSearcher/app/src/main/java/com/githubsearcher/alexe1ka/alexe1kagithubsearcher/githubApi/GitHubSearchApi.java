@@ -12,7 +12,7 @@ import retrofit2.http.Query;
  * Created by alexe1ka on 13.07.2017.
  */
 
-public interface GitHubApi {
+public interface GitHubSearchApi {
     @GET("/search/repositories")
     Call<ArrayList<SearchRepository>> foundRepository(@Query("name") String searchKeyword);
 }

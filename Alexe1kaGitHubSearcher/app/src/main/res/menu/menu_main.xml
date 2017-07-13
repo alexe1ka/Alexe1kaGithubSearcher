@@ -2,9 +2,39 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.githubsearcher.alexe1ka.alexe1kagithubsearcher.MainActivity">
+
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/menu_description"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="Select One"
         app:showAsAction="never" />
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/language_settings"
+            android:orderInCategory="100"
+            android:title="language"
+            app:showAsAction="never" />
+
+        <item
+            android:id="@+id/repo_settings"
+            android:orderInCategory="100"
+            android:title="repo name"
+            app:showAsAction="never" />
+
+        <item
+            android:id="@+id/name_settings"
+            android:orderInCategory="100"
+            android:title="user name"
+            app:showAsAction="never" />
+
+        <item
+            android:id="@+id/topic_settings"
+            android:orderInCategory="100"
+            android:title="topic"
+            app:showAsAction="never" />
+    </group>
+
+
+
 </menu>

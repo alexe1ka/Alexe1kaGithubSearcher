@@ -1,7 +1,5 @@
 package com.githubsearcher.alexe1ka.alexe1kagithubsearcher.model;
 
-import android.content.ClipData;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

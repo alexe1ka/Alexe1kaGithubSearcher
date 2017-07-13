@@ -41,7 +41,7 @@
         app:layout_constraintLeft_toLeftOf="parent" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floatingActionButton"
+        android:id="@+id/searchingActionButton"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:clickable="true"

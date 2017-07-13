@@ -23,7 +23,7 @@ public class AppSearch extends Application {
         super.onCreate();
 
         retrofit = new Retrofit.Builder().
-                baseUrl("https://api.github.com/search/repositories").
+                baseUrl("https://api.github.com/search/repositories/").
                 addConverterFactory(GsonConverterFactory.create()).
                 build(); //конвертер json
         gitHubSearchApiApi = retrofit.create(GitHubSearchApi.class);

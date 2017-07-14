@@ -72,7 +72,7 @@ public class RepositoryActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     ReposResponse result = response.body();
                     Log.d(TAG, "response = " + new Gson().toJson(result));
-                    mRecyclerView.setAdapter(new FoundRepoAdapter(result.getItems(),getApplicationContext()));
+                    mRecyclerView.setAdapter(new FoundRepoAdapter(result.getItems(), getApplicationContext()));
                     if (mProgressDialog != null) {
                         mProgressDialog.hide();
                     }

@@ -2,17 +2,22 @@ package com.githubsearcher.alexe1ka.alexe1kagithubsearcher.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.bumptech.glide.Glide;
 import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.R;
 import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.model.Item;
 import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.model.Owner;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -42,13 +47,17 @@ public class FoundRepoAdapter extends RecyclerView.Adapter<FoundRepoAdapter.View
         holder.mUserTextView.setText(owner.getLogin());
         holder.mRepoNameTextView.setText(itemRepo.getName());
         holder.mUrlTextView.setText(owner.getHtmlUrl());
-        // TODO open browser by intent URl
+
+        Glide.with(mContext).load(owner.getAvatarUrl()).into(holder.mAvatarImageView);
+
+        /*
         holder.mUrlTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mContext.startActivity(new Intent(Intent.ACTION_VIEW,Uri.parse(owner.getHtmlUrl())));
             }
         });
+        */
 
     }
 
@@ -61,6 +70,7 @@ public class FoundRepoAdapter extends RecyclerView.Adapter<FoundRepoAdapter.View
         private TextView mUserTextView;
         private TextView mRepoNameTextView;
         private TextView mUrlTextView;
+        private ImageView mAvatarImageView;
 
 
         public ViewHolder(View itemView) {
@@ -68,6 +78,7 @@ public class FoundRepoAdapter extends RecyclerView.Adapter<FoundRepoAdapter.View
             mUserTextView = (TextView) itemView.findViewById(R.id.userTextView);
             mRepoNameTextView = (TextView) itemView.findViewById(R.id.repoNameTextView);
             mUrlTextView = (TextView) itemView.findViewById(R.id.urlTextView);
+            mAvatarImageView = (ImageView) itemView.findViewById(R.id.userAvatarImageView);
         }
     }
 }

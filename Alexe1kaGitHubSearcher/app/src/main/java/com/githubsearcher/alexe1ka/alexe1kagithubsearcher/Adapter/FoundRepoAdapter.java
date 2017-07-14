@@ -1,5 +1,8 @@
 package com.githubsearcher.alexe1ka.alexe1kagithubsearcher.Adapter;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,9 +22,11 @@ import java.util.List;
 
 public class FoundRepoAdapter extends RecyclerView.Adapter<FoundRepoAdapter.ViewHolder> {
     private List<Item> mItemsFoundRepos;
+    private Context mContext;
 
-    public FoundRepoAdapter(List<Item> itemsFoundRepos) {
-        this.mItemsFoundRepos = itemsFoundRepos;
+    public FoundRepoAdapter(List<Item> mItemsFoundRepos, Context mContext) {
+        this.mItemsFoundRepos = mItemsFoundRepos;
+        this.mContext = mContext;
     }
 
     @Override
@@ -33,11 +38,17 @@ public class FoundRepoAdapter extends RecyclerView.Adapter<FoundRepoAdapter.View
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Item itemRepo = mItemsFoundRepos.get(position);
-        Owner owner = itemRepo.getOwner();
+        final Owner owner = itemRepo.getOwner();
         holder.mUserTextView.setText(owner.getLogin());
         holder.mRepoNameTextView.setText(itemRepo.getName());
         holder.mUrlTextView.setText(owner.getHtmlUrl());
         // TODO open browser by intent URl
+        holder.mUrlTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mContext.startActivity(new Intent(Intent.ACTION_VIEW,Uri.parse(owner.getHtmlUrl())));
+            }
+        });
 
     }
 

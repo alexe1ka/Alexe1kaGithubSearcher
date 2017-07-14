@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.R;
-import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.RepositoryActivity;
 
 /**
  * A placeholder fragment containing a simple view.

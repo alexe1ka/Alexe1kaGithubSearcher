@@ -1,4 +1,4 @@
-package com.githubsearcher.alexe1ka.alexe1kagithubsearcher;
+package com.githubsearcher.alexe1ka.alexe1kagithubsearcher.Activity;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -15,6 +15,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.Adapter.FoundRepoAdapter;
+import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.AppSearch;
+import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.R;
 import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.model.Item;
 import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.model.ReposResponse;
 import com.google.gson.Gson;
@@ -70,7 +72,7 @@ public class RepositoryActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     ReposResponse result = response.body();
                     Log.d(TAG, "response = " + new Gson().toJson(result));
-                    mRecyclerView.setAdapter(new FoundRepoAdapter(result.getItems()));
+                    mRecyclerView.setAdapter(new FoundRepoAdapter(result.getItems(),getApplicationContext()));
                     if (mProgressDialog != null) {
                         mProgressDialog.hide();
                     }

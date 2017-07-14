@@ -27,8 +27,8 @@ public class AppSearch extends Application {
 
         retrofit = new Retrofit.Builder().
                 baseUrl("https://api.github.com").
-                addConverterFactory(GsonConverterFactory.create(gson)).
-                build(); //конвертер json
+                addConverterFactory(GsonConverterFactory.create(gson)).//конвертер json
+                build();
         gitHubSearchApi = retrofit.create(GitHubSearchApi.class);
     }
 

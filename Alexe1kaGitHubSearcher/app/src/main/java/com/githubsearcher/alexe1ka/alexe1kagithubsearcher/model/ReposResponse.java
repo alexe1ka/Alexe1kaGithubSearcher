@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by alexe1ka on 14.07.2017.
  */
-
+//generate by http://www.jsonschema2pojo.org
 public class ReposResponse {
     @SerializedName("total_count")
     @Expose

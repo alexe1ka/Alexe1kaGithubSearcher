@@ -27,39 +27,28 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class RepositoryActivity extends AppCompatActivity {
+    public final static String TAG = "RepoActivity";
 
-    private String searchKeyword;
-    RecyclerView recyclerView;
-    List<Item> itemRepositories;
-    ProgressDialog mProgressDialog;
-
-
-    TextView mRepoView;
+    private String mSearchKeyword;
+    private RecyclerView mRecyclerView;
+    private ProgressDialog mProgressDialog;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_repository);
-        searchKeyword = getIntent().getExtras().getString("searchKeyword");
-        Log.d("RepoActivity", "searchKeyword = " + searchKeyword);
-        Toast.makeText(getApplicationContext(), searchKeyword, Toast.LENGTH_LONG).show();
+        mSearchKeyword = getIntent().getExtras().getString("mSearchKeyword");
+        Log.d("RepoActivity", "mSearchKeyword = " + mSearchKeyword);
 
 
-        itemRepositories = new ArrayList<>();
-
-        recyclerView = (RecyclerView) findViewById(R.id.repo_rv);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-
-        FoundRepoAdapter foundRepoAdapter = new FoundRepoAdapter(itemRepositories);
-        recyclerView.setAdapter(foundRepoAdapter);
-
+        mRecyclerView = (RecyclerView) findViewById(R.id.repo_rv);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         if (isNetworkConnected() || isWifiConnected()) {
             mProgressDialog = new ProgressDialog(this);
             mProgressDialog.setMessage("Please wait...");
             mProgressDialog.setCancelable(false);
             mProgressDialog.show();
-
             makeRequestToApi();
         } else {
             new AlertDialog.Builder(this)
@@ -71,22 +60,20 @@ public class RepositoryActivity extends AppCompatActivity {
                         }
                     }).setIcon(android.R.drawable.ic_dialog_alert).show();
         }
-
     }
 
     private void makeRequestToApi() {
-        AppSearch.getSearchApi().foundRepository(searchKeyword).enqueue(new Callback<ReposResponse>() {
+        AppSearch.getSearchApi().foundRepository(mSearchKeyword).enqueue(new Callback<ReposResponse>() {
             @Override
             public void onResponse(Call<ReposResponse> call, Response<ReposResponse> response) {
-                Log.d("RepoActivity", "Status Code = " + response.code());
-                //Log.v("RESPONSE_BODY", response.body().toString());
+                Log.d(TAG, "Status Code = " + response.code());
                 if (response.isSuccessful()) {
                     ReposResponse result = response.body();
-                    Log.d("MainActivity", "response = " + new Gson().toJson(result));
-                    //Log.i(getApplicationContext().toString(), response.toString());
-                    Toast.makeText(getApplicationContext(), response.body().getTotalCount().toString(), Toast.LENGTH_LONG).show();
-                    itemRepositories.addAll(response.body().getItems());
-                    //recyclerView.getAdapter().notifyDataSetChanged();
+                    Log.d(TAG, "response = " + new Gson().toJson(result));
+                    mRecyclerView.setAdapter(new FoundRepoAdapter(result.getItems()));
+                    if (mProgressDialog != null) {
+                        mProgressDialog.hide();
+                    }
                 } else {
                     Toast.makeText(getApplicationContext(), "response=null", Toast.LENGTH_LONG).show();
                 }

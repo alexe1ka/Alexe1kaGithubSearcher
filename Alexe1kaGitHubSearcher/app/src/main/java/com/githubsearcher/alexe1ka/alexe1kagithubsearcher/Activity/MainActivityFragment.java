@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.R;
 import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.RepositoryActivity;
@@ -20,9 +19,9 @@ import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.RepositoryActivity;
 public class MainActivityFragment extends Fragment {
 
 
-    public EditText mInputKeyword;
-    public FloatingActionButton mSearchActionButton;
-    public String searchKeyword;
+    private EditText mInputKeyword;
+    private FloatingActionButton mSearchActionButton;
+    private String mSearchKeyword;
 
 
     public MainActivityFragment() {
@@ -34,23 +33,17 @@ public class MainActivityFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
         mInputKeyword = (EditText) view.findViewById(R.id.keywords_edit_text);
-
         mSearchActionButton = (FloatingActionButton) view.findViewById(R.id.searchingActionButton);
-
-
         mSearchActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //make intent
-                Intent intent = new Intent(getActivity(),RepositoryActivity.class);
+                Intent intent = new Intent(getActivity(), RepositoryActivity.class);
                 makeSearchKeyword();
-                intent.putExtra("searchKeyword",searchKeyword);
+                intent.putExtra("mSearchKeyword", mSearchKeyword);
                 startActivity(intent);
-                Log.i(getContext().toString(),"searchKeyword="+searchKeyword);
-
+                Log.i(getContext().toString(), "mSearchKeyword=" + mSearchKeyword);
                 //finish();
-
-
             }
         });
         return view;
@@ -68,9 +61,7 @@ public class MainActivityFragment extends Fragment {
             stringBuilder.append(words[i]);
             stringBuilder.append('+');
         }
-        searchKeyword = stringBuilder.toString();
-        return searchKeyword;
+        mSearchKeyword = stringBuilder.toString();
+        return mSearchKeyword;
     }
-
-
 }

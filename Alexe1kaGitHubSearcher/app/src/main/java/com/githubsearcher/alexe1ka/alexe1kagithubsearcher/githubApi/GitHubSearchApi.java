@@ -9,7 +9,7 @@ import retrofit2.http.Query;
 /**
  * Created by alexe1ka on 13.07.2017.
  */
-
+// q - параметр поиска
 public interface GitHubSearchApi {
     @GET("/search/repositories")
     Call<ReposResponse> foundRepository(@Query("q") String searchKeyword);

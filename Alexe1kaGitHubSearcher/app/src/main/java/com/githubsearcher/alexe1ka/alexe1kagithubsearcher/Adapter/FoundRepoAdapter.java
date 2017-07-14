@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.R;
 import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.model.Item;
-import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.model.ReposResponse;
+import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.model.Owner;
 
 import java.util.List;
 
@@ -18,10 +18,10 @@ import java.util.List;
  */
 
 public class FoundRepoAdapter extends RecyclerView.Adapter<FoundRepoAdapter.ViewHolder> {
-    private List<Item> itemsFoundRepos;
+    private List<Item> mItemsFoundRepos;
 
     public FoundRepoAdapter(List<Item> itemsFoundRepos) {
-        this.itemsFoundRepos = itemsFoundRepos;
+        this.mItemsFoundRepos = itemsFoundRepos;
     }
 
     @Override
@@ -32,27 +32,24 @@ public class FoundRepoAdapter extends RecyclerView.Adapter<FoundRepoAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-/*
-        ReposResponse model = foundRepos.get(position);
-        ReposResponse.SearchRepository searchRepository = model.getSearchRepository();
-        ReposResponse.SearchRepository.Item item = (ReposResponse.SearchRepository.Item)searchRepository.getItems();
-        ReposResponse.SearchRepository.Item.Owner owner = item.getOwner();
-
+        Item itemRepo = mItemsFoundRepos.get(position);
+        Owner owner = itemRepo.getOwner();
         holder.mUserTextView.setText(owner.getLogin());
-        holder.mRepoNameTextView.setText(item.getName());
+        holder.mRepoNameTextView.setText(itemRepo.getName());
         holder.mUrlTextView.setText(owner.getHtmlUrl());
-        */
+        // TODO open browser by intent URl
+
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return mItemsFoundRepos.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView mUserTextView;
-        TextView mRepoNameTextView;
-        TextView mUrlTextView;
+        private TextView mUserTextView;
+        private TextView mRepoNameTextView;
+        private TextView mUrlTextView;
 
 
         public ViewHolder(View itemView) {

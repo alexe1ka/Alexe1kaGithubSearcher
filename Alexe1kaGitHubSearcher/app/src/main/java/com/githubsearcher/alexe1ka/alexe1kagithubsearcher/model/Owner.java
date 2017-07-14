@@ -7,6 +7,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by alexe1ka on 14.07.2017.
  */
 
+//generate by http://www.jsonschema2pojo.org
 public class Owner {
 
     @SerializedName("login")

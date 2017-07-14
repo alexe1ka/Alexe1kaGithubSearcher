@@ -14,7 +14,10 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.model.SearchRepository;
+import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.Adapter.FoundRepoAdapter;
+import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.model.Item;
+import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.model.ReposResponse;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,11 +26,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class RepositoryActivity extends AppCompatActivity implements DownloadComplete {
+public class RepositoryActivity extends AppCompatActivity {
 
     private String searchKeyword;
     RecyclerView recyclerView;
-    List<SearchRepository> repositories;
+    List<Item> itemRepositories;
     ProgressDialog mProgressDialog;
 
 
@@ -39,13 +42,16 @@ public class RepositoryActivity extends AppCompatActivity implements DownloadCom
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_repository);
         searchKeyword = getIntent().getExtras().getString("searchKeyword");
+        Log.d("RepoActivity", "searchKeyword = " + searchKeyword);
+        Toast.makeText(getApplicationContext(), searchKeyword, Toast.LENGTH_LONG).show();
 
-        repositories = new ArrayList<>();
+
+        itemRepositories = new ArrayList<>();
 
         recyclerView = (RecyclerView) findViewById(R.id.repo_rv);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
-        FoundRepoAdapter foundRepoAdapter = new FoundRepoAdapter(repositories);
+        FoundRepoAdapter foundRepoAdapter = new FoundRepoAdapter(itemRepositories);
         recyclerView.setAdapter(foundRepoAdapter);
 
         if (isNetworkConnected() || isWifiConnected()) {
@@ -69,22 +75,26 @@ public class RepositoryActivity extends AppCompatActivity implements DownloadCom
     }
 
     private void makeRequestToApi() {
-        AppSearch.getSearchApi().foundRepository(searchKeyword).enqueue(new Callback<ArrayList<SearchRepository>>() {
+        AppSearch.getSearchApi().foundRepository(searchKeyword).enqueue(new Callback<ReposResponse>() {
             @Override
-            public void onResponse(Call<ArrayList<SearchRepository>> call, Response<ArrayList<SearchRepository>> response) {
-                Log.v("RESPONSE_BODY", response.body().toString());
-                if (response.body() != null) {
-                    Log.i(getApplicationContext().toString(), response.toString());
-                    repositories.addAll(response.body());
-                    recyclerView.getAdapter().notifyDataSetChanged();
+            public void onResponse(Call<ReposResponse> call, Response<ReposResponse> response) {
+                Log.d("RepoActivity", "Status Code = " + response.code());
+                //Log.v("RESPONSE_BODY", response.body().toString());
+                if (response.isSuccessful()) {
+                    ReposResponse result = response.body();
+                    Log.d("MainActivity", "response = " + new Gson().toJson(result));
+                    //Log.i(getApplicationContext().toString(), response.toString());
+                    Toast.makeText(getApplicationContext(), response.body().getTotalCount().toString(), Toast.LENGTH_LONG).show();
+                    itemRepositories.addAll(response.body().getItems());
+                    //recyclerView.getAdapter().notifyDataSetChanged();
                 } else {
-                    Toast.makeText(getApplicationContext(), "response body=0", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "response=null", Toast.LENGTH_LONG).show();
                 }
 
             }
 
             @Override
-            public void onFailure(Call<ArrayList<SearchRepository>> call, Throwable t) {
+            public void onFailure(Call<ReposResponse> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
             }
         });
@@ -103,8 +113,5 @@ public class RepositoryActivity extends AppCompatActivity implements DownloadCom
         return networkInfo != null && (ConnectivityManager.TYPE_WIFI == networkInfo.getType()) && networkInfo.isConnected();
     }
 
-    @Override
-    public void downloadComplete(ArrayList<SearchRepository> searchRepositories) {
 
-    }
 }

@@ -1,4 +1,4 @@
-package com.githubsearcher.alexe1ka.alexe1kagithubsearcher;
+package com.githubsearcher.alexe1ka.alexe1kagithubsearcher.Activity;
 
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
@@ -10,6 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.R;
+import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.RepositoryActivity;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -40,6 +43,7 @@ public class MainActivityFragment extends Fragment {
             public void onClick(View v) {
                 //make intent
                 Intent intent = new Intent(getActivity(),RepositoryActivity.class);
+                makeSearchKeyword();
                 intent.putExtra("searchKeyword",searchKeyword);
                 startActivity(intent);
                 Log.i(getContext().toString(),"searchKeyword="+searchKeyword);
@@ -47,8 +51,6 @@ public class MainActivityFragment extends Fragment {
                 //finish();
 
 
-                makeSearchKeyword();
-                Toast.makeText(getContext(), searchKeyword, Toast.LENGTH_LONG).show();
             }
         });
         return view;

@@ -1,4 +1,4 @@
-package com.githubsearcher.alexe1ka.alexe1kagithubsearcher;
+package com.githubsearcher.alexe1ka.alexe1kagithubsearcher.Adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,9 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+
+import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.R;
 import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.model.Item;
-import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.model.Owner;
-import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.model.SearchRepository;
+import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.model.ReposResponse;
 
 import java.util.List;
 
@@ -17,10 +18,10 @@ import java.util.List;
  */
 
 public class FoundRepoAdapter extends RecyclerView.Adapter<FoundRepoAdapter.ViewHolder> {
-    private List<SearchRepository> foundRepos;
+    private List<Item> itemsFoundRepos;
 
-    public FoundRepoAdapter(List<SearchRepository> foundRepo) {
-        this.foundRepos = foundRepo;
+    public FoundRepoAdapter(List<Item> itemsFoundRepos) {
+        this.itemsFoundRepos = itemsFoundRepos;
     }
 
     @Override
@@ -31,13 +32,16 @@ public class FoundRepoAdapter extends RecyclerView.Adapter<FoundRepoAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        SearchRepository searchRepository = foundRepos.get(position);
-        Item item = (Item) searchRepository.getItems();
-        Owner owner = item.getOwner();
+/*
+        ReposResponse model = foundRepos.get(position);
+        ReposResponse.SearchRepository searchRepository = model.getSearchRepository();
+        ReposResponse.SearchRepository.Item item = (ReposResponse.SearchRepository.Item)searchRepository.getItems();
+        ReposResponse.SearchRepository.Item.Owner owner = item.getOwner();
 
         holder.mUserTextView.setText(owner.getLogin());
         holder.mRepoNameTextView.setText(item.getName());
         holder.mUrlTextView.setText(owner.getHtmlUrl());
+        */
     }
 
     @Override

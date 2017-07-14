@@ -2,8 +2,6 @@ package com.githubsearcher.alexe1ka.alexe1kagithubsearcher.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,7 +15,6 @@ import com.bumptech.glide.Glide;
 import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.R;
 import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.model.Item;
 import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.model.Owner;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 

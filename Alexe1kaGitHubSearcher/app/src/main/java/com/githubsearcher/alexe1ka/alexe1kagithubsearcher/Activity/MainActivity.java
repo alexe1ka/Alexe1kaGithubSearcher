@@ -18,6 +18,7 @@ GitHub API(https://developer.github.com/v3/search/)
 для поиска репозитория по ключевым словам.
 Нужно отобразить список найденных проектов,
 при клике на элемент списка - открыть браузер и перейти на страницу проекта на GitHub.
+https://developer.github.com/v3/search/
  */
 
 public class MainActivity extends AppCompatActivity {

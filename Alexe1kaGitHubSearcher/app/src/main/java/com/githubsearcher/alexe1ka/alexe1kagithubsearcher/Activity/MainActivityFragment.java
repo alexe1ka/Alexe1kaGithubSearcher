@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,29 +41,34 @@ public class MainActivityFragment extends Fragment {
         mSearchActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //check internet connection
-                if (isWifiConnected() || isNetworkConnected()) {
-                    //make intent
-                    Intent intent = new Intent(getActivity(), RepositoryActivity.class);
-                    makeSearchKeyword();
-                    intent.putExtra("mSearchKeyword", mSearchKeyword);
-                    startActivity(intent);
+                //введено ли ключевое слово
+                //TODO проверка введененного слова на null
+                if (mInputKeyword.getText().toString().trim().length() != 0) {
+                    //check internet connection
+                    if ((isWifiConnected() || isNetworkConnected())) {
+                        //make intent
+                        Intent intent = new Intent(getActivity(), RepositoryActivity.class);
+                        makeSearchKeyword();
+                        intent.putExtra("mSearchKeyword", mSearchKeyword);
+                        startActivity(intent);
 
-                    Log.i(getContext().toString(), "mSearchKeyword=" + mSearchKeyword);
-                    //getActivity().finish();
+                        Log.i(getContext().toString(), "mSearchKeyword=" + mSearchKeyword);
+                        //getActivity().finish();
+                    } else {
+                        //noInternet-> intent в настройки
+                        Snackbar.make(view, "Turn on internet", Snackbar.LENGTH_LONG).setAction("Open settings", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent settingsIntent = new Intent(android.provider.Settings.ACTION_SETTINGS);
+                                settingsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(settingsIntent);
+                            }
+                        }).show();
+                    }
                 } else {
-                    //noInternet-> intent в настройки
-                    Snackbar.make(view, "Check internet", Snackbar.LENGTH_LONG).setAction("Open settings", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent settingsIntent = new Intent(android.provider.Settings.ACTION_SETTINGS);
-                            settingsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(settingsIntent);
-                        }
-                    }).show();
+                    //ключевое слово не введено
+                    Snackbar.make(view, "Please insert a keyword", Snackbar.LENGTH_LONG).show();
                 }
-
-
             }
         });
         return view;
@@ -70,7 +76,7 @@ public class MainActivityFragment extends Fragment {
 
     //генерирует ?q = " search keyword"
     private String makeSearchKeyword() {
-        String[] words = mInputKeyword.getText().toString().split("[\\p{P} \\t\\n\\r]");
+        String[] words = mInputKeyword.getText().toString().split("[\\p{P} \\t\\n\\r]");//разобраться
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < words.length; i++) {
             if (i == words.length - 1) {

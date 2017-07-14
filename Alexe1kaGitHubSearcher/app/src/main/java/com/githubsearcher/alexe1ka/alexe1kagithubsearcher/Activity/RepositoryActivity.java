@@ -46,13 +46,13 @@ public class RepositoryActivity extends AppCompatActivity {
 
         mRecyclerView = (RecyclerView) findViewById(R.id.repo_rv);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        if (isNetworkConnected() || isWifiConnected()) {
+        //if (isNetworkConnected() || isWifiConnected()) {
             mProgressDialog = new ProgressDialog(this);
             mProgressDialog.setMessage("Please wait...");
             mProgressDialog.setCancelable(false);
             mProgressDialog.show();
             makeRequestToApi();
-        } else {
+        /*} else {
             new AlertDialog.Builder(this)
                     .setTitle("No Internet Connection")
                     .setMessage("It looks like your internet connection is off. Please turn it " +
@@ -61,7 +61,7 @@ public class RepositoryActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int which) {
                         }
                     }).setIcon(android.R.drawable.ic_dialog_alert).show();
-        }
+        }*/
     }
 
     private void makeRequestToApi() {
@@ -90,17 +90,7 @@ public class RepositoryActivity extends AppCompatActivity {
     }
 
 
-    private boolean isNetworkConnected() {
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
-    }
 
-    private boolean isWifiConnected() {
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        return networkInfo != null && (ConnectivityManager.TYPE_WIFI == networkInfo.getType()) && networkInfo.isConnected();
-    }
 
 
 }

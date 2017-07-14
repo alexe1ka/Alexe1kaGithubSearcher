@@ -1,7 +1,11 @@
 package com.githubsearcher.alexe1ka.alexe1kagithubsearcher.Activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,20 +33,36 @@ public class MainActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_main, container, false);
+        final View view = inflater.inflate(R.layout.fragment_main, container, false);
 
         mInputKeyword = (EditText) view.findViewById(R.id.keywords_edit_text);
         mSearchActionButton = (FloatingActionButton) view.findViewById(R.id.searchingActionButton);
         mSearchActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //make intent
-                Intent intent = new Intent(getActivity(), RepositoryActivity.class);
-                makeSearchKeyword();
-                intent.putExtra("mSearchKeyword", mSearchKeyword);
-                startActivity(intent);
-                Log.i(getContext().toString(), "mSearchKeyword=" + mSearchKeyword);
-                //finish();
+                //check internet connection
+                if (isWifiConnected() || isNetworkConnected()) {
+                    //make intent
+                    Intent intent = new Intent(getActivity(), RepositoryActivity.class);
+                    makeSearchKeyword();
+                    intent.putExtra("mSearchKeyword", mSearchKeyword);
+                    startActivity(intent);
+
+                    Log.i(getContext().toString(), "mSearchKeyword=" + mSearchKeyword);
+                    //getActivity().finish();
+                } else {
+                    //noInternet-> intent в настройки
+                    Snackbar.make(view, "Check internet", Snackbar.LENGTH_LONG).setAction("Open settings", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent settingsIntent = new Intent(android.provider.Settings.ACTION_SETTINGS);
+                            settingsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(settingsIntent);
+                        }
+                    }).show();
+                }
+
+
             }
         });
         return view;
@@ -63,4 +83,18 @@ public class MainActivityFragment extends Fragment {
         mSearchKeyword = stringBuilder.toString();
         return mSearchKeyword;
     }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager connMgr = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnected();
+    }
+
+    private boolean isWifiConnected() {
+        ConnectivityManager connMgr = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        return networkInfo != null && (ConnectivityManager.TYPE_WIFI == networkInfo.getType()) && networkInfo.isConnected();
+    }
+
+
 }

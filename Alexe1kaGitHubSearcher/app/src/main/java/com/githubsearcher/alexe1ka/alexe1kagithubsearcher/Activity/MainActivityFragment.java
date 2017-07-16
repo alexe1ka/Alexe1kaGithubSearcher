@@ -22,7 +22,6 @@ import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.R;
  */
 public class MainActivityFragment extends Fragment {
 
-
     private EditText mInputKeyword;
     private FloatingActionButton mSearchActionButton;
     private String mSearchKeyword;
@@ -42,7 +41,6 @@ public class MainActivityFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 //введено ли ключевое слово
-                //TODO проверка введененного слова на null
                 if (mInputKeyword.getText().toString().trim().length() != 0) {
                     //check internet connection
                     if ((isWifiConnected() || isNetworkConnected())) {
@@ -73,6 +71,11 @@ public class MainActivityFragment extends Fragment {
         });
         return view;
     }
+
+
+
+
+
 
     //генерирует ?q = " search keyword"
     private String makeSearchKeyword() {

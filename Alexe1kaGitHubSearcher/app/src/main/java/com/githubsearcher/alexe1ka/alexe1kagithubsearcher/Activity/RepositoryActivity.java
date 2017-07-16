@@ -1,28 +1,18 @@
 package com.githubsearcher.alexe1ka.alexe1kagithubsearcher.Activity;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.Adapter.FoundRepoAdapter;
 import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.AppSearch;
 import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.R;
-import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.model.Item;
 import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.model.ReposResponse;
 import com.google.gson.Gson;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -77,6 +67,5 @@ public class RepositoryActivity extends AppCompatActivity {
             }
         });
     }
-
 
 }

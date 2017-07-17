@@ -114,7 +114,7 @@ public class RepositoryActivity extends AppCompatActivity {
                         Log.d(TAG, "response = " + new Gson().toJson(result));
                         List<Item> itemList = result.getItems();
                         foundRepoAdapter.addAll(itemList);
-                        if (currentPage <= TOTAL_RESULT_ON_PAGES) {
+                        if (itemList.size() >= TOTAL_RESULT_ON_PAGES) {
                             foundRepoAdapter.addLoadingFooter();
                         } else {
                             isLastPage = true;
@@ -163,7 +163,7 @@ public class RepositoryActivity extends AppCompatActivity {
                 ReposResponse nextResult = response.body();
                 List<Item> itemList = nextResult.getItems();
                 foundRepoAdapter.addAll(itemList);
-                if (currentPage != TOTAL_RESULT_ON_PAGES) {
+                if (itemList.size() >= TOTAL_RESULT_ON_PAGES) {
                     foundRepoAdapter.addLoadingFooter();
                 } else {
                     isLastPage = true;

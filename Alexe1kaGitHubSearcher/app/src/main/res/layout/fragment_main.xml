@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.githubsearcher.alexe1ka.alexe1kagithubsearcher.MainActivityFragment"
+    tools:context="com.githubsearcher.alexe1ka.alexe1kagithubsearcher.Activity.MainActivityFragment"
     tools:showIn="@layout/activity_main"
     tools:layout_editor_absoluteY="137dp"
     tools:layout_editor_absoluteX="0dp">

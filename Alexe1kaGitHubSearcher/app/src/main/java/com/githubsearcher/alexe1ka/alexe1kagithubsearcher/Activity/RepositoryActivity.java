@@ -4,18 +4,23 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+
 import android.widget.Toast;
 
 import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.Adapter.FoundRepoAdapter;
 import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.AppSearch;
 import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.R;
+import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.model.Item;
 import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.model.ReposResponse;
 import com.google.gson.Gson;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -24,7 +29,6 @@ import retrofit2.Response;
 //TODO строки в strings убрать
 public class RepositoryActivity extends AppCompatActivity {
     public final static String TAG = "RepoActivity";
-    private int mPageIndex = 1;
 
     private String mSearchKeyword;
     private RecyclerView mRecyclerView;
@@ -36,8 +40,9 @@ public class RepositoryActivity extends AppCompatActivity {
     private static final int PAGE_START = 1;
     private boolean isLoading = false;
     private boolean isLastPage = false;
-    private int TOTAL_PAGES = 5;
+    private int TOTAL_RESULT_ON_PAGES =30;
     private int currentPage = PAGE_START;
+    ReposResponse result;
 
 
     @Override
@@ -54,40 +59,68 @@ public class RepositoryActivity extends AppCompatActivity {
 
         mRecyclerView.setLayoutManager(linearLayoutManager);
 
-
+        foundRepoAdapter = new FoundRepoAdapter(this);
+        mRecyclerView.setAdapter(foundRepoAdapter);
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setMessage("Please wait...");
         mProgressDialog.setCancelable(false);
         mProgressDialog.show();
-        makeRequestToApi(mPageIndex);
 
 
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRecyclerView.addOnScrollListener(new PaginationScrollListener(linearLayoutManager) {
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
+            protected void loadMoreItems() {
+                isLoading = true;
+                currentPage += 1;
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        makeOtherRequestToApi();
+                    }
+                }, 1000);
+
             }
 
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
+            public int getTotalPageCount() {
+                return TOTAL_RESULT_ON_PAGES;
+            }
+
+            @Override
+            public boolean isLastPage() {
+                return isLastPage;
+            }
+
+            @Override
+            public boolean isLoading() {
+                return isLoading;
             }
         });
 
+        makeFirstRequestToApi(currentPage);
 
     }
 
-    private void makeRequestToApi(int page) {
+
+    private void makeFirstRequestToApi(int page) {
         AppSearch.getSearchApi().foundRepository(mSearchKeyword, page).enqueue(new Callback<ReposResponse>() {
             @Override
             public void onResponse(Call<ReposResponse> call, Response<ReposResponse> response) {
                 Log.d(TAG, "Status Code = " + response.code());
                 if (response.body().getTotalCount() != 0) {
                     if (response.isSuccessful()) {
-                        ReposResponse result = response.body();
+                        result = response.body();
                         Log.d(TAG, "response = " + new Gson().toJson(result));
-                        foundRepoAdapter = new FoundRepoAdapter(result.getItems(), getApplicationContext());
-                        mRecyclerView.setAdapter(foundRepoAdapter);
+                        List<Item> itemList = result.getItems();
+                        foundRepoAdapter.addAll(itemList);
+                        if (currentPage <= TOTAL_RESULT_ON_PAGES) {
+                            foundRepoAdapter.addLoadingFooter();
+                        } else {
+                            isLastPage = true;
+                        }
+
+
                         if (mProgressDialog != null) {
                             mProgressDialog.hide();
                         }
@@ -120,4 +153,27 @@ public class RepositoryActivity extends AppCompatActivity {
         });
     }
 
+
+    private void makeOtherRequestToApi() {
+        AppSearch.getSearchApi().foundRepository(mSearchKeyword, currentPage).enqueue(new Callback<ReposResponse>() {
+            @Override
+            public void onResponse(Call<ReposResponse> call, Response<ReposResponse> response) {
+                foundRepoAdapter.removeLoadingFooter();
+                isLoading = false;
+                ReposResponse nextResult = response.body();
+                List<Item> itemList = nextResult.getItems();
+                foundRepoAdapter.addAll(itemList);
+                if (currentPage != TOTAL_RESULT_ON_PAGES) {
+                    foundRepoAdapter.addLoadingFooter();
+                } else {
+                    isLastPage = true;
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ReposResponse> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "response=null in other request", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
 }

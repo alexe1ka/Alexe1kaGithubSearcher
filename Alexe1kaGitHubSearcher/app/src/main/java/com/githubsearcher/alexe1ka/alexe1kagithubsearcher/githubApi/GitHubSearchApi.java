@@ -12,5 +12,8 @@ import retrofit2.http.Query;
 // q - параметр поиска
 public interface GitHubSearchApi {
     @GET("/search/repositories")
-    Call<ReposResponse> foundRepository(@Query("q") String searchKeyword);
+    //Call<ReposResponse> foundRepository(@Query("q") String searchKeyword);
+    Call<ReposResponse> foundRepository(@Query("q") String searchKeyword,@Query("page") int page);
+
+
 }

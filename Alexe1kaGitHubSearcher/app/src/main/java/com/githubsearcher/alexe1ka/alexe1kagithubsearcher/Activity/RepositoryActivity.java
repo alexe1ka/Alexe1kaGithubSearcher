@@ -4,13 +4,11 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.githubsearcher.alexe1ka.alexe1kagithubsearcher.Adapter.FoundRepoAdapter;
@@ -24,19 +22,14 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 //TODO строки в strings убрать
+//TODO строки в strings убрать
 public class RepositoryActivity extends AppCompatActivity {
     public final static String TAG = "RepoActivity";
-    private int pageIndex = 1;
+    private int mPageIndex = 1;
 
     private String mSearchKeyword;
     private RecyclerView mRecyclerView;
     private ProgressDialog mProgressDialog;
-
-
-
-    private boolean isLoading;
-
-
 
 
     @Override
@@ -46,57 +39,24 @@ public class RepositoryActivity extends AppCompatActivity {
         mSearchKeyword = getIntent().getExtras().getString("mSearchKeyword");
         Log.d("RepoActivity", "mSearchKeyword = " + mSearchKeyword);
 
-
+        
         mRecyclerView = (RecyclerView) findViewById(R.id.repo_rv);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         mRecyclerView.setLayoutManager(linearLayoutManager);
+
 
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setMessage("Please wait...");
         mProgressDialog.setCancelable(false);
         mProgressDialog.show();
-        makeRequestToApi(pageIndex);
-/*
-        //догрузка при скроллинге
-        RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                int visibleItemCount = linearLayoutManager.getChildCount();
-                int totalItemCount = linearLayoutManager.getItemCount();
-                int firstVisibleItemPosition = linearLayoutManager.findFirstVisibleItemPosition();
-
-                if (!isLoading && !isLastPage) {
-                    if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
-                            && firstVisibleItemPosition >= 0
-                            && totalItemCount >= PAGE_SIZE) {
-                        loadMoreItems();
-                    }
-                }
-            }
-        };
-
-
-
-
-        mRecyclerView.addOnScrollListener(onScrollListener);
-
-*/
-
-
-
-
+        makeRequestToApi(mPageIndex);
     }
 
-    private void makeRequestToApi( int page) {
+    private void makeRequestToApi(int page) {
         AppSearch.getSearchApi().foundRepository(mSearchKeyword, page).enqueue(new Callback<ReposResponse>() {
             @Override
             public void onResponse(Call<ReposResponse> call, Response<ReposResponse> response) {
-
                 Log.d(TAG, "Status Code = " + response.code());
-
-                isLoading = false;
-
                 if (response.body().getTotalCount() != 0) {
                     if (response.isSuccessful()) {
                         ReposResponse result = response.body();

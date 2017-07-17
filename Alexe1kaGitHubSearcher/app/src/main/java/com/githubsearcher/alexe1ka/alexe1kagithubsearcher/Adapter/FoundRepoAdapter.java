@@ -86,7 +86,7 @@ public class FoundRepoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 Glide.with(mContext).load(owner.getAvatarUrl()).into(itemViewHolder.mAvatarImageView);
                 break;
             case STATE_LOADING:
-                ((LoadedViewHolder)holder).progressBar.setIndeterminate(true);
+                ((LoadedViewHolder) holder).progressBar.setIndeterminate(true);
                 break;
         }
     }

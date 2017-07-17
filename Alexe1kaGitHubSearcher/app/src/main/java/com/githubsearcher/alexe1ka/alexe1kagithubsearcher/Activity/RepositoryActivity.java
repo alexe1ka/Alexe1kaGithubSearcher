@@ -29,20 +29,21 @@ import retrofit2.Response;
 //TODO строки в strings убрать
 public class RepositoryActivity extends AppCompatActivity {
     public final static String TAG = "RepoActivity";
+    public final static int TOTAL_RESULT_ON_PAGES = 30;
 
     private String mSearchKeyword;
     private RecyclerView mRecyclerView;
     private ProgressDialog mProgressDialog;
-    private LinearLayoutManager linearLayoutManager;
+    private LinearLayoutManager mLinearLayoutManager;
+    private FoundRepoAdapter mFoundRepoAdapter;
 
-
-    private FoundRepoAdapter foundRepoAdapter;
-    private static final int PAGE_START = 1;
     private boolean isLoading = false;
     private boolean isLastPage = false;
-    private int TOTAL_RESULT_ON_PAGES =30;
+
+    private static final int PAGE_START = 1;
     private int currentPage = PAGE_START;
-    ReposResponse result;
+
+    private ReposResponse result;
 
 
     @Override
@@ -55,31 +56,24 @@ public class RepositoryActivity extends AppCompatActivity {
 
         mRecyclerView = (RecyclerView) findViewById(R.id.repo_rv);
 
-        linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+        mLinearLayoutManager = new LinearLayoutManager(getApplicationContext());
 
-        mRecyclerView.setLayoutManager(linearLayoutManager);
+        mRecyclerView.setLayoutManager(mLinearLayoutManager);
 
-        foundRepoAdapter = new FoundRepoAdapter(this);
-        mRecyclerView.setAdapter(foundRepoAdapter);
+        mFoundRepoAdapter = new FoundRepoAdapter(this);
+        mRecyclerView.setAdapter(mFoundRepoAdapter);
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setMessage("Please wait...");
         mProgressDialog.setCancelable(false);
         mProgressDialog.show();
 
 
-        mRecyclerView.addOnScrollListener(new PaginationScrollListener(linearLayoutManager) {
+        mRecyclerView.addOnScrollListener(new PaginationScrollListener(mLinearLayoutManager) {
             @Override
             protected void loadMoreItems() {
                 isLoading = true;
                 currentPage += 1;
-
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        makeOtherRequestToApi();
-                    }
-                }, 1000);
-
+                makeOtherRequestToApi();
             }
 
             @Override
@@ -99,7 +93,6 @@ public class RepositoryActivity extends AppCompatActivity {
         });
 
         makeFirstRequestToApi(currentPage);
-
     }
 
 
@@ -113,13 +106,12 @@ public class RepositoryActivity extends AppCompatActivity {
                         result = response.body();
                         Log.d(TAG, "response = " + new Gson().toJson(result));
                         List<Item> itemList = result.getItems();
-                        foundRepoAdapter.addAll(itemList);
+                        mFoundRepoAdapter.addAll(itemList);
                         if (itemList.size() >= TOTAL_RESULT_ON_PAGES) {
-                            foundRepoAdapter.addLoadingFooter();
+                            mFoundRepoAdapter.addLoadingFooter();
                         } else {
                             isLastPage = true;
                         }
-
 
                         if (mProgressDialog != null) {
                             mProgressDialog.hide();
@@ -158,13 +150,13 @@ public class RepositoryActivity extends AppCompatActivity {
         AppSearch.getSearchApi().foundRepository(mSearchKeyword, currentPage).enqueue(new Callback<ReposResponse>() {
             @Override
             public void onResponse(Call<ReposResponse> call, Response<ReposResponse> response) {
-                foundRepoAdapter.removeLoadingFooter();
+                mFoundRepoAdapter.removeLoadingFooter();
                 isLoading = false;
                 ReposResponse nextResult = response.body();
                 List<Item> itemList = nextResult.getItems();
-                foundRepoAdapter.addAll(itemList);
+                mFoundRepoAdapter.addAll(itemList);
                 if (itemList.size() >= TOTAL_RESULT_ON_PAGES) {
-                    foundRepoAdapter.addLoadingFooter();
+                    mFoundRepoAdapter.addLoadingFooter();
                 } else {
                     isLastPage = true;
                 }

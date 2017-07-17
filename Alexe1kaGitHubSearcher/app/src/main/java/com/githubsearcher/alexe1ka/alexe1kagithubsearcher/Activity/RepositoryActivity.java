@@ -22,7 +22,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 //TODO строки в strings убрать
-//TODO строки в strings убрать
 public class RepositoryActivity extends AppCompatActivity {
     public final static String TAG = "RepoActivity";
     private int mPageIndex = 1;
@@ -30,6 +29,15 @@ public class RepositoryActivity extends AppCompatActivity {
     private String mSearchKeyword;
     private RecyclerView mRecyclerView;
     private ProgressDialog mProgressDialog;
+    private LinearLayoutManager linearLayoutManager;
+
+
+    private FoundRepoAdapter foundRepoAdapter;
+    private static final int PAGE_START = 1;
+    private boolean isLoading = false;
+    private boolean isLastPage = false;
+    private int TOTAL_PAGES = 5;
+    private int currentPage = PAGE_START;
 
 
     @Override
@@ -39,9 +47,11 @@ public class RepositoryActivity extends AppCompatActivity {
         mSearchKeyword = getIntent().getExtras().getString("mSearchKeyword");
         Log.d("RepoActivity", "mSearchKeyword = " + mSearchKeyword);
 
-        
+
         mRecyclerView = (RecyclerView) findViewById(R.id.repo_rv);
-        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+
+        linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+
         mRecyclerView.setLayoutManager(linearLayoutManager);
 
 
@@ -50,6 +60,21 @@ public class RepositoryActivity extends AppCompatActivity {
         mProgressDialog.setCancelable(false);
         mProgressDialog.show();
         makeRequestToApi(mPageIndex);
+
+
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
+
+
     }
 
     private void makeRequestToApi(int page) {
@@ -61,7 +86,8 @@ public class RepositoryActivity extends AppCompatActivity {
                     if (response.isSuccessful()) {
                         ReposResponse result = response.body();
                         Log.d(TAG, "response = " + new Gson().toJson(result));
-                        mRecyclerView.setAdapter(new FoundRepoAdapter(result.getItems(), getApplicationContext()));
+                        foundRepoAdapter = new FoundRepoAdapter(result.getItems(), getApplicationContext());
+                        mRecyclerView.setAdapter(foundRepoAdapter);
                         if (mProgressDialog != null) {
                             mProgressDialog.hide();
                         }

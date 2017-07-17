@@ -26,9 +26,19 @@ public class FoundRepoAdapter extends RecyclerView.Adapter<FoundRepoAdapter.View
     private List<Item> mItemsFoundRepos;
     private Context mContext;
 
+    private boolean isLoadingAdded = false;
+
     public FoundRepoAdapter(List<Item> mItemsFoundRepos, Context mContext) {
         this.mItemsFoundRepos = mItemsFoundRepos;
         this.mContext = mContext;
+    }
+
+    public List<Item> getItemsFoundRepos() {
+        return mItemsFoundRepos;
+    }
+
+    public void setItemsFoundRepos(List<Item> mItemsFoundRepos) {
+        this.mItemsFoundRepos = mItemsFoundRepos;
     }
 
     @Override
@@ -51,6 +61,59 @@ public class FoundRepoAdapter extends RecyclerView.Adapter<FoundRepoAdapter.View
     public int getItemCount() {
         return mItemsFoundRepos.size();
     }
+
+    public void add(Item item) {
+        this.mItemsFoundRepos.add(item);
+        notifyItemInserted(mItemsFoundRepos.size() - 1);
+        //notifyDataSetChanged();
+    }
+
+    public void addAll(List<Item> mItemsFoundRepos) {
+        for (Item item : mItemsFoundRepos) {
+            add(item);
+        }
+    }
+
+    public void remove(Item item) {
+        int position = mItemsFoundRepos.indexOf(item);
+        if (position > -1) {
+            mItemsFoundRepos.remove(position);
+            notifyItemRemoved(position);
+        }
+    }
+
+    public void clear() {
+        isLoadingAdded = false;
+        while (getItemCount() > 0) {
+            remove(getItem(0));
+        }
+    }
+
+    public boolean isEmpty() {
+        return getItemCount() == 0;
+    }
+
+
+    public void addLoadingFooter() {
+        isLoadingAdded = true;
+        add(new Item());
+    }
+
+    public void removeLoadingFooter() {
+        isLoadingAdded = false;
+        int position = mItemsFoundRepos.size() - 1;
+        Item item = getItem(position);
+        if (item != null) {
+            mItemsFoundRepos.remove(position);
+            notifyItemRemoved(position);
+        }
+    }
+
+    public Item getItem(int position) {
+        return mItemsFoundRepos.get(position);
+    }
+
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView mUserTextView;
